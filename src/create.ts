@@ -33,6 +33,9 @@ export interface Answers {
   /** Package license (e.g. "MIT") */
   license: string;
 
+  /** Whether to set up GitHub-specific repository features */
+  "setup-github": boolean;
+
   libram: boolean;
 
   grimoire: boolean;
@@ -99,6 +102,12 @@ export async function create() {
       default: undefined, // We'll try to guess pm later
       prompt: "never",
     },
+    "setup-github": {
+      type: "confirm",
+      describe: "Include GitHub-specific files, such as the auto-deploy workflow?",
+      default: true,
+      prompt: "if-no-arg",
+    },
     "skip-git": {
       type: "confirm",
       describe: "Skip initializing git repository",
@@ -155,6 +164,8 @@ export async function create() {
       year,
       packageManager,
     },
+    // Skip copying node_modules, our yarn.lock, and maybe the .github directory
+    ignored: ["node_modules/**", "yarn.lock", ...(args["setup-github"] ? [] : [".github/**"])],
   });
 
   // create license file
