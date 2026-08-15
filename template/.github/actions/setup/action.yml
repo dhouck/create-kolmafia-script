@@ -1,0 +1,31 @@
+name: "Setup project"
+description: "Set up Node, Yarn, and dependencies"
+inputs:
+  node-version:
+    description: "The version of Node.js to use"
+    required: true
+# This action does not have any outputs
+runs:
+  using: "composite"
+  steps:
+    - name: Enable corepack
+      run: corepack enable
+      shell: bash
+
+    - name: Use Node.js $\{{ inputs.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: $\{{ inputs.node-version }}
+
+    - name: Install dependencies
+      {{!--
+        Handlebars doesn't have a `switch` block; this is the closest option I could figure out.
+        Adapted from https://github.com/handlebars-lang/handlebars.js/issues/927#issuecomment-886163779
+      --}}
+      {{#if true}}
+      {{~#*inline "yarn"}}--immutable{{/inline~}}
+      {{~#*inline "npm"}}--ci{{/inline~}}
+      {{!-- We use --frozen-lockfile for PNPM and as the default --}}
+      run: {{packageManager}} install {{#> (lookup . "packageManager")}}--frozen-lockfile{{/undefined}}
+      {{/if}}
+      shell: bash
