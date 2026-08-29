@@ -1,8 +1,11 @@
 {
-  "name": "create-kolmafia-script",
-  "description": "Create a kolmafia script with ease",
+  "name": "@dhouck/create-kolmafia-script",
+  "description": "Create a kolmafia script with ease, with some additional patches",
   "version": "0.4.0",
   "author": "Sam Gaus <sam@gaus.co.uk>",
+  "contributors": [
+    "Daniel Houck <Software@DRHouck.me>"
+  ],
   "scripts": {
     "build": "tsc --noEmit && tsup src/cli.ts --minify --format esm",
     "clean": "shx rm -rf dist",
@@ -14,10 +17,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/loathers/create-kolmafia-script.git"
+    "url": "git+https://github.com/dhouck/create-kolmafia-script.git"
   },
   "type": "module",
-  "bin": "dist/cli.js",
+  "bin": {
+    "create-kolmafia-script": "dist/cli.js"
+  },
   "files": [
     "dist",
     "template"
