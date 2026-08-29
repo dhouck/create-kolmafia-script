@@ -1,3 +1,5 @@
+*.md
+
 # Prettier cannot handle Handlebars YAML files; let template Prettier handle it
 template/.github/**/*.yml
 
