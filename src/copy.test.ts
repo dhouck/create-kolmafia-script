@@ -10,7 +10,7 @@ function isIgnored(relativePath: string, ignored: string[]) {
 
 describe("templateIgnores", () => {
   const forPackageManager = (packageManager: string) =>
-    templateIgnores({ setupGithub: true, packageManager });
+    templateIgnores({ setupGithub: true, setupGitHooks: true, packageManager });
 
   it("gives the pnpm config to pnpm", () => {
     expect(isIgnored("pnpm-workspace.yaml", forPackageManager("pnpm"))).toBe(false);
@@ -32,21 +32,55 @@ describe("templateIgnores", () => {
   });
 
   it("brings the github directory when it was asked for", () => {
-    const ignored = templateIgnores({ setupGithub: true, packageManager: "yarn" });
+    const ignored = templateIgnores({
+      setupGithub: true,
+      setupGitHooks: true,
+      packageManager: "yarn",
+    });
 
     expect(isIgnored(".github/workflows/deploy.yml", ignored)).toBe(false);
     expect(isIgnored(".github/actions/setup/action.yml", ignored)).toBe(false);
   });
 
   it("leaves the github directory when it was not", () => {
-    const ignored = templateIgnores({ setupGithub: false, packageManager: "yarn" });
+    const ignored = templateIgnores({
+      setupGithub: false,
+      setupGitHooks: true,
+      packageManager: "yarn",
+    });
 
     expect(isIgnored(".github/workflows/deploy.yml", ignored)).toBe(true);
     expect(isIgnored(".github/actions/setup/action.yml", ignored)).toBe(true);
   });
 
+  it("brings the git hooks when they were asked for", () => {
+    const ignored = templateIgnores({
+      setupGithub: true,
+      setupGitHooks: true,
+      packageManager: "yarn",
+    });
+
+    expect(isIgnored(".husky/pre-commit", ignored)).toBe(false);
+    expect(isIgnored("lint-staged.config.ts", ignored)).toBe(false);
+  });
+
+  it("leaves the git hooks when they were not", () => {
+    const ignored = templateIgnores({
+      setupGithub: true,
+      setupGitHooks: false,
+      packageManager: "yarn",
+    });
+
+    expect(isIgnored(".husky/pre-commit", ignored)).toBe(true);
+    expect(isIgnored("lint-staged.config.ts", ignored)).toBe(true);
+  });
+
   it("brings everything a new project actually wants", () => {
-    const ignored = templateIgnores({ setupGithub: true, packageManager: "pnpm" });
+    const ignored = templateIgnores({
+      setupGithub: true,
+      setupGitHooks: true,
+      packageManager: "pnpm",
+    });
 
     for (const wanted of [
       "package.json",

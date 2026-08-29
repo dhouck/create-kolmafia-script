@@ -11,8 +11,8 @@
     "clean": "shx rm -rf dist",
     "dev": "tsup src/cli.ts --watch",
     "prepack": "npm run clean && npm run build",
-    "format": "eslint src --fix --ext .ts && prettier --write --list-different .",
-    "lint": "eslint src --ext .ts && prettier --check .",
+    "format": "eslint src --fix --ext .ts && prettier --write --list-different --no-editorconfig .",
+    "lint": "eslint src --ext .ts && prettier --check --no-editorconfig .",
     "test": "vitest run"
   },
   "repository": {

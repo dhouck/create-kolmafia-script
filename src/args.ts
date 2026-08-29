@@ -67,7 +67,12 @@ export function parseCliArgs(entrypoint: string) {
       "setup-github": {
         type: "boolean",
         description: "include the auto-deploy workflow",
-        defaultDescription: "yes",
+        defaultDescription: "if git is set up",
+      },
+      "setup-git-hooks": {
+        type: "boolean",
+        description: "include the Husky git hooks",
+        defaultDescription: "if git is set up",
       },
       libram: {
         type: "boolean",
