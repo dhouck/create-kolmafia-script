@@ -38,14 +38,17 @@ async function* walk(dir: string): AsyncGenerator<string> {
  */
 export function templateIgnores({
   setupGithub,
+  setupGitHooks,
   packageManager,
 }: {
   setupGithub: boolean;
+  setupGitHooks: boolean;
   packageManager: string;
 }) {
   const ignored = ["node_modules/**", "yarn.lock", ".npmignore"];
 
   if (!setupGithub) ignored.push(".github/**");
+  if (!setupGitHooks) ignored.push(".husky/**", "lint-staged.config.ts");
   if (packageManager !== "pnpm") ignored.push("pnpm-workspace.yaml");
 
   return ignored;
