@@ -1,7 +1,7 @@
 {
   "name": "@dhouck/create-kolmafia-script",
   "description": "Create a kolmafia script with ease, with some additional patches",
-  "version": "0.4.0",
+  "version": "0.4.1-custom.5",
   "author": "Sam Gaus <sam@gaus.co.uk>",
   "contributors": [
     "Daniel Houck <Software@DRHouck.me>"
@@ -53,5 +53,6 @@
   "engines": {
     "node": "^22.20 || ^24.10 || >= 25"
   },
-  "engineStrict": true
+  "engineStrict": true,
+  "stableVersion": "0.4.0"
 }
