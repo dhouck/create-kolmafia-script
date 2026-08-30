@@ -9,14 +9,15 @@ import { parseCliArgs } from "./args.js";
 import { copy, templateIgnores } from "./copy.js";
 import {
   addDeps,
-  configureYarn,
+  configurePm,
   installDeps,
   getCiInstallCommand,
   getPmAndVersion,
   isPmSupported,
+  runScript,
 } from "./packageManager.js";
 import { isInteractive, resolve } from "./prompt.js";
-import { getGitUser, initGit, isOccupied, toContact, printWarning } from "./utils.js";
+import { getGitUser, initGit, isOccupied, toContact, printWarning, fileExists } from "./utils.js";
 
 const templateDir = path.resolve(import.meta.dirname, "..", "template");
 
@@ -163,8 +164,9 @@ export async function create(entrypoint: string) {
     }
   }
 
-  if (packageManager === "yarn") {
-    await configureYarn(packageDir);
+  if (isPmSupported(packageManager)) {
+    log.step("Setting additional package manager configuration, if needed");
+    await configurePm(packageDir, packageManager);
   }
 
   if (flags["skip-install"]) {
@@ -188,6 +190,11 @@ export async function create(entrypoint: string) {
 
     log.step(`Installing dependencies using ${packageManager}`);
     await installDeps(packageDir, packageManager);
+
+    if (await fileExists(path.join(packageDir, ".editorconfig"))) {
+      log.step("Detected .editorconfig; reformatting package");
+      await runScript(packageDir, ["format"], packageManager);
+    }
 
     if (answers.libram) {
       log.step(`Installing ${chalk.italic("libram")} as a dependency`);
