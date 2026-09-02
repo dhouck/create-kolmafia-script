@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+if ! git rev-parse HEAD >/dev/null 2>&1; then
+  # No prior commit; lint-staged doesnn't like --hide-all on initial commit
+  hide=--hide-unstaged
+else
+  hide=--hide-all
+fi
+
+# Note: continue-on-error does so for both parallel and series execution;
+# thereʼs no option for just continuing already-launched commands
+{{packageManager}} exec -- lint-staged ${hide} --continue-on-error

@@ -16,7 +16,8 @@
     "lint:fix": "eslint . --fix --ext .ts",
     "check": "{{packageManager}} run lint:check && {{packageManager}} run style:check",
     "fix": "{{packageManager}} run lint:fix && {{packageManager}} run style:fix",
-    "install-mafia": "{{packageManager}} run build && create-kolmafia-script --install"
+    "install-mafia": "{{packageManager}} run build && create-kolmafia-script --install",
+    "setup-git-hooks": "husky"
   },
   "dependencies": {
     "kolmafia": "latest"
@@ -41,7 +42,9 @@
     "eslint": "^10.8.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-libram": "^0.6.0",
+    "husky": "^9.1.7",
     "jiti": "^2.6.1",
+    "lint-staged": "^17.4.1",
     "prettier": "^3.8.1",
     "rollup": "^4.57.1",
     "tslib": "^2.8.1",
