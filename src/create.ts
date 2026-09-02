@@ -113,7 +113,7 @@ export async function create(entrypoint: string) {
     "setup-github": await askConfirm(
       flags["setup-github"],
       "Include GitHub files, such as the auto-deploy workflow?",
-      true,
+      !flags["skip-git"],
     ),
     libram: await askConfirm(
       flags.libram,
