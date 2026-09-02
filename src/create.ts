@@ -193,7 +193,7 @@ export async function create(entrypoint: string) {
 
     if (await fileExists(path.join(packageDir, ".editorconfig"))) {
       log.step("Detected .editorconfig; reformatting package");
-      await runScript(packageDir, ["format"], packageManager);
+      await runScript(packageDir, ["style:fix"], packageManager);
     }
 
     if (answers.libram) {

@@ -10,8 +10,12 @@
     "test": "vitest run",
     "test:watch": "vitest watch --no-clearScreen",
     "watch": "concurrently --prefix \"[{name} {time}]\" -t \"HH:mm:ss\" --pad-prefix \"{{packageManager}}:*:watch\"",
-    "format": "eslint src --fix --ext .ts && NODE_OPTIONS=\"--experimental-strip-types\" prettier --write --list-different .",
-    "lint": "eslint src --ext .ts &&  NODE_OPTIONS=\"--experimental-strip-types\" prettier --check .",
+    "style:check": "prettier --check .",
+    "style:fix": "prettier --write --list-different .",
+    "lint:check": "eslint . --ext .ts",
+    "lint:fix": "eslint . --fix --ext .ts",
+    "check": "{{packageManager}} run lint:check && {{packageManager}} run style:check",
+    "fix": "{{packageManager}} run lint:fix && {{packageManager}} run style:fix",
     "install-mafia": "{{packageManager}} run build && create-kolmafia-script --install"
   },
   "dependencies": {
