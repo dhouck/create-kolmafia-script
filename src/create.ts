@@ -46,6 +46,8 @@ export interface Answers {
   /** Whether to set up GitHub-specific repository features */
   "setup-github": boolean;
 
+  "setup-git-hooks": boolean;
+
   libram: boolean;
 
   grimoire: boolean;
@@ -115,6 +117,11 @@ export async function create(entrypoint: string) {
       "Include GitHub files, such as the auto-deploy workflow?",
       !flags["skip-git"],
     ),
+    "setup-git-hooks": await askConfirm(
+      flags["setup-git-hooks"],
+      "Include git hooks to automatically check the project before committing?",
+      !flags["skip-git"],
+    ),
     libram: await askConfirm(
       flags.libram,
       `Install ${chalk.italic("libram")}? (a general purpose library for KoLmafia scripting)`,
@@ -140,7 +147,11 @@ export async function create(entrypoint: string) {
       packageManagerVersion,
       ciInstallCommand: getCiInstallCommand(packageManager),
     },
-    ignored: templateIgnores({ setupGithub: answers["setup-github"], packageManager }),
+    ignored: templateIgnores({
+      setupGithub: answers["setup-github"],
+      setupGitHooks: answers["setup-git-hooks"],
+      packageManager,
+    }),
   });
 
   // create license file
@@ -190,6 +201,18 @@ export async function create(entrypoint: string) {
 
     log.step(`Installing dependencies using ${packageManager}`);
     await installDeps(packageDir, packageManager);
+
+    if (answers["setup-git-hooks"]) {
+      log.step("Setting up git hooks with husky and lint-staged");
+      await installNpmPackage(["husky", "lint-staged"], true);
+      if (!flags["skip-git"]) {
+        await runScript(packageDir, ["setup-git-hooks"], packageManager);
+      } else {
+        log.warn("Not running setup-git-hooks script without git directory");
+      }
+    } else {
+      log.warn("The setup-git-hooks script still exists in package.json, but will not work");
+    }
 
     if (await fileExists(path.join(packageDir, ".editorconfig"))) {
       log.step("Detected .editorconfig; reformatting package");
