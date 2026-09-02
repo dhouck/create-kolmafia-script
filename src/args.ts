@@ -67,7 +67,7 @@ export function parseCliArgs(entrypoint: string) {
       "setup-github": {
         type: "boolean",
         description: "include the auto-deploy workflow",
-        defaultDescription: "yes",
+        defaultDescription: "if git is set up",
       },
       libram: {
         type: "boolean",
