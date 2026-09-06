@@ -1,6 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getCiInstallCommand, getPmAndVersion, supportedPMs } from "./packageManager.js";
+import {
+  addDepsArgs,
+  getCiInstallCommand,
+  getPmAndVersion,
+  pmBinary,
+  supportedPMs,
+} from "./packageManager.js";
 
 const originalUserAgent = process.env.npm_config_user_agent;
 
@@ -80,5 +86,33 @@ describe("getCiInstallCommand", () => {
 
   it("guesses at a manager it knows nothing about", () => {
     expect(getCiInstallCommand("bun")).toBe("bun install --frozen-lockfile");
+  });
+});
+
+describe("pmBinary", () => {
+  it.each(["npm", "pnpm"] as const)("calls %s by its own name", (packageManager) => {
+    expect(pmBinary(packageManager)).toBe(packageManager);
+  });
+
+  it("calls yarn by its yarnpkg alias", () => {
+    expect(pmBinary("yarn")).toBe("yarnpkg");
+  });
+});
+
+describe("addDepsArgs", () => {
+  it("adds a runtime dependency", () => {
+    expect(addDepsArgs(["libram"])).toEqual(["add", "libram"]);
+  });
+
+  it("adds several dependencies at once", () => {
+    expect(addDepsArgs(["libram", "grimoire-kolmafia"])).toEqual([
+      "add",
+      "libram",
+      "grimoire-kolmafia",
+    ]);
+  });
+
+  it("passes -D after the dependencies for a dev dependency", () => {
+    expect(addDepsArgs(["tslib"], true)).toEqual(["add", "tslib", "-D"]);
   });
 });

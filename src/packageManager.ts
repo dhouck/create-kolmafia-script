@@ -75,8 +75,16 @@ export function getPmAndVersion(
   return { packageManager, packageManagerVersion };
 }
 
+export function pmBinary(pm: PackageManager): string {
+  return pm === "yarn" ? "yarnpkg" : pm;
+}
+
+export function addDepsArgs(deps: string[], isDev = false): string[] {
+  return ["add", ...deps, ...(isDev ? ["-D"] : [])];
+}
+
 async function runPmCommand(rootDir: string, action: string, pm: PackageManager, args: string[]) {
-  const command = pm === "yarn" ? "yarnpkg" : pm;
+  const command = pmBinary(pm);
   printCommand(command, ...args);
 
   try {
@@ -107,6 +115,5 @@ export async function addDeps(
     pm: PackageManager;
   },
 ) {
-  const args: string[] = ["add", ...deps, ...(isDev ? ["-D"] : [])];
-  await runPmCommand(rootDir, "add dependencies", pm, args);
+  await runPmCommand(rootDir, "add dependencies", pm, addDepsArgs(deps, isDev));
 }
